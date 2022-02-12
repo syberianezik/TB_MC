@@ -1,0 +1,169 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+//#include <>assert.h>
+#define CRT_SECURE_NO_WARNINGS
+char arithmetic_operation(const char* );
+
+double term();
+
+double mult_div();
+
+double plus_minus();
+
+double calculate_x(char* );
+
+char* X;
+
+
+int main()
+{
+    //
+    //
+    /*   
+    FILE* input = fopen("input.txt","r");
+    FILE* output = fopen("output.txt","w");*/
+    
+    
+freopen("input.txt", "r", stdin);
+freopen("output.txt", "w", stdout);
+char x[500000];
+double result;
+fgets(x, sizeof(x), stdin);
+result = calculate_x(x);
+printf("%0.12g", result);
+getchar();
+}
+
+void space_skip()
+{
+while (isspace(*X)) X++;
+}
+
+char arithmetic_operation(const char* op)
+{
+space_skip();
+if (*X && strchr(op, *X)) //вхождение символа в строку
+return *X++;
+
+}
+double term()
+{
+double n = 0;
+space_skip();
+if (isdigit(*X) || *X == '.')
+{
+char N[32];
+int dot;
+char* x = N;
+do
+{
+dot = (*X == '.');
+*x++ = *X++;
+}
+/*
+while (isdigit(*X) || (!dot && *X == '.'));
+*x = '\0'; n = atof(N);
+}*/
+while (isdigit(*X) || (!dot && *X == '.'));
+*x = '\0'; n = atof(N);
+}
+
+else if (*X == '-' || *X == '+')
+{
+int minus = (*X == '-');
+X++;
+n = term(); if (minus) n = -n;
+}
+
+/*else if (*X == '-' || *X == '+')
+{
+int minus = (*X == '-');
+X++;
+n = term(); if (minus) n = -n;
+}*/
+
+else if (*X == '(')
+{
+X++;
+n = plus_minus();
+if (arithmetic_operation(")") != ')')
+{
+exit(-1);
+}
+}
+
+return n;
+}
+
+double mult_div()
+{
+double v1, v2;
+char op;
+v1 = term();
+while (op = arithmetic_operation("*/"))
+{
+v2 = term();
+switch (op)
+{
+case '*': v1 = v1 * v2;
+break;
+/*{
+v2 = term();
+switch (op)
+{
+case '*': v1 = v1 * v2;
+break;*/
+case '/': if (v2 == 0.)
+{
+exit(-1);
+}
+
+v1 = v1 / v2;
+break;
+
+
+
+}
+}
+
+return v1;
+}
+
+double plus_minus()
+{
+double v1, v2;
+char op;
+v1 = mult_div();
+while (op = arithmetic_operation("+-"))
+{
+v2 = mult_div();
+switch (op)
+{
+case '+': v1 = v1 + v2;
+break;
+case '-': v1 = v1 - v2;
+break;
+
+/*{
+case '+': v1 = v1 + v2;
+break;
+case '-': v1 = v1 - v2;
+break;*/
+}
+}
+return v1;
+}
+
+double calculate_x(char* x)
+{
+X = x;
+return plus_minus();
+}
+/*
+double calculate_x(char* x)
+{
+X = x;
+return plus_minus();
+}*/
